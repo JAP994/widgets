@@ -30,4 +30,11 @@ const appMenuItems = <MenuItem>[
     icon: Icons.credit_card,
   ),
 
+  MenuItem(
+    title: 'About',
+    subTitle: 'Un contenedor about', 
+    link: '/about', 
+    icon: Icons.abc_outlined
+  ),
+
 ];
