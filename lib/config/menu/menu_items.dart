@@ -37,4 +37,11 @@ const appMenuItems = <MenuItem>[
     icon: Icons.abc_outlined
   ),
 
+  MenuItem(
+    title: 'ProgressIndicators',
+    subTitle: 'Generales y controlados', 
+    link: '/progress', 
+    icon: Icons.refresh_rounded
+  ),
+
 ];
