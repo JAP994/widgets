@@ -37,7 +37,6 @@ final slides = <SlideInfo>[
 
 class AppTutorialScreen extends StatefulWidget {
   static const String name = 'tutorial_screen';
-
   const AppTutorialScreen({super.key});
 
   @override
@@ -45,18 +44,19 @@ class AppTutorialScreen extends StatefulWidget {
 }
 
 class _AppTutorialScreenState extends State<AppTutorialScreen> {
-  final PageController pageviewControler = PageController();
+  final PageController pageviewController = PageController();
   bool endReached = false;
 
   @override
   void initState() {
     super.initState();
-
-    pageviewControler.addListener(() {
-      final page = pageviewControler.page ?? 0;
-      if (!endReached && page >= (slides.length - 1.5)) {
+    pageviewController.addListener(() {
+      final page = pageviewController.page ?? 0;
+      final lastPageIndex = slides.length - 1;
+      final newEndReached = page >= lastPageIndex;
+      if (endReached != newEndReached) {
         setState(() {
-          endReached = true;
+          endReached = newEndReached;
         });
       }
     });
@@ -64,7 +64,7 @@ class _AppTutorialScreenState extends State<AppTutorialScreen> {
 
   @override
   void dispose() {
-    pageviewControler.dispose();
+    pageviewController.dispose();
     super.dispose();
   }
 
@@ -75,17 +75,13 @@ class _AppTutorialScreenState extends State<AppTutorialScreen> {
       body: Stack(
         children: [
           PageView(
-            controller: pageviewControler,
+            controller: pageviewController,
             physics: const BouncingScrollPhysics(),
-            children: slides
-                .map(
-                  (slideData) => _Slide(
-                    title: slideData.title,
-                    caption: slideData.caption,
-                    imageUrl: slideData.imageUrl,
-                  ),
-                )
-                .toList(),
+            children: slides.map((slideData) => _Slide(
+              title: slideData.title,
+              caption: slideData.caption,
+              imageUrl: slideData.imageUrl,
+            )).toList(),
           ),
 
           Positioned(
@@ -93,25 +89,22 @@ class _AppTutorialScreenState extends State<AppTutorialScreen> {
             top: 50,
             child: TextButton(
               onPressed: () => context.pop(),
-              child: Text('Salir'),
+              child: const Text('Salir'),
             ),
           ),
 
-          endReached ?
+          if (endReached)
             Positioned(
               bottom: 30,
               right: 30,
               child: FadeInRight(
                 from: 15,
-                delay: const Duration(seconds: 1),
                 child: FilledButton(
                   onPressed: () => context.pop(),
                   child: const Text('Comenzar'),
                 ),
               ),
-            ): SizedBox(),
-
-
+            ),
         ],
       ),
     );
