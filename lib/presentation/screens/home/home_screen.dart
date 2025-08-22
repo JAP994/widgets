@@ -10,11 +10,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Flutter + Material 3'), centerTitle: false),
-      body: MediaQuery.removePadding(
-        context: context,
-        removeBottom: true,
-        child: _HomeView()
-      ),
+      body: _HomeView(),
     );
   }
 }
