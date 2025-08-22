@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
 import 'package:widgets_app/presentation/providers/drawer_state.dart';
 
-class SideMenu extends StatelessWidget {
+class SideMenu extends ConsumerWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
   const SideMenu({super.key, required this.scaffoldKey});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasNotch = MediaQuery.of(context).viewPadding.top > 35;
-    final drawerState = Provider.of<DrawerState>(context);
+    final drawerState = ref.watch(drawerStateProvider);
 
     return NavigationDrawer(
-      selectedIndex: drawerState.selectedIndex,
+      selectedIndex: drawerState,
       onDestinationSelected: (value) {
-        drawerState.selectedIndex = value;
+        ref.read(drawerStateProvider.notifier).setSelectedIndex(value);
         final menuItem = appMenuItems[value];
         context.push(menuItem.link);
         scaffoldKey.currentState?.closeDrawer();

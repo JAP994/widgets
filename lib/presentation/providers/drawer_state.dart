@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DrawerState with ChangeNotifier {
-  int _selectedIndex = 0;
+class DrawerState extends Notifier<int> {
+  @override
+  int build() => 0;
 
-  int get selectedIndex => _selectedIndex;
-
-  set selectedIndex(int index) {
-    _selectedIndex = index;
-    notifyListeners();
+  void setSelectedIndex(int index) {
+    state = index;
   }
 }
+
+final drawerStateProvider = NotifierProvider<DrawerState, int>(DrawerState.new);
