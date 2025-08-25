@@ -8,18 +8,21 @@ class ThemeChangerScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode = ref.watch(isDarkmodeProvider);
+    final theme = ref.watch(themeNotifierProvider);
+    final isDarkMode = theme.isDarkmode;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Theme Changer'),
+        title: const Text('Theme Changer'),
         actions: [
           IconButton(
             icon: Icon(
-              isDarkMode ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+              isDarkMode
+                  ? Icons.dark_mode_outlined
+                  : Icons.light_mode_outlined,
             ),
-            onPressed: () {
-              ref.read(isDarkmodeProvider.notifier).update((state) => !state);
-            },
+            onPressed:
+                ref.read(themeNotifierProvider.notifier).toggleDarckmode,
           ),
         ],
       ),
@@ -33,14 +36,17 @@ class _ThemeChangerView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final List<Color> colors = ref.watch(colorListProvider);
-    final int selectedColor = ref.watch(selectedColorProvider);
-    final notifier = ref.read(selectedColorProvider.notifier);
+    final colors = ref.watch(colorListProvider);
+    final selectedColor = ref.watch(themeNotifierProvider).selectedColor;
 
     return RadioGroup<int>(
       groupValue: selectedColor,
       onChanged: (int? newValue) {
-        if (newValue != null) notifier.state = newValue;
+        if (newValue != null) {
+          ref
+              .read(themeNotifierProvider.notifier)
+              .changeColorIndex(newValue);
+        }
       },
       child: ListView.builder(
         itemCount: colors.length,
@@ -50,15 +56,22 @@ class _ThemeChangerView extends ConsumerWidget {
             leading: Radio<int>(
               value: index,
               activeColor: color,
-              fillColor: WidgetStateProperty.resolveWith<Color?>(
+              fillColor:
+                  WidgetStateProperty.resolveWith<Color?>(
                 (states) =>
-                    states.contains(WidgetState.selected) ? color : null,
+                    states.contains(WidgetState.selected)
+                        ? color
+                        : null,
               ),
             ),
             title: Text('Este color', style: TextStyle(color: color)),
             subtitle: Text('${color.toARGB32()}'),
             selected: selectedColor == index,
-            onTap: () => notifier.state = index,
+            onTap: () {
+              ref
+                  .read(themeNotifierProvider.notifier)
+                  .changeColorIndex(index);
+            },
           );
         },
       ),
